@@ -1,5 +1,6 @@
 import urllib3
 from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 
 # Criando metodo crawl
 def crawl(pagina):
@@ -14,8 +15,29 @@ def crawl(pagina):
     
     sopa = BeautifulSoup(dados_pagina.data, "lxml")
     links = sopa.find_all('a')
+    contador = 1
     for link in links:
-        print(str(link.contents) + " - " + str(link.get('href')))
+        #print(str(link.contents) + " - " + str(link.get('href')))
+        #print(link.attrs)
+        #print('\n')
+        
+        if ('href' in link.attrs):
+            url = urljoin(pagina, str(link.get('href')))
+            #if url != link.get('href'):
+                #print(url)
+                #print(link.get('href'))
+                
+            if url.find("'") != -1:
+                continue
+            
+            #print(url)
+            url = url.split('#')[0]
+            #print(url)
+            #print('\n')
+
+            contador = contador + 1
+    
+    print(contador)
         
         
 
