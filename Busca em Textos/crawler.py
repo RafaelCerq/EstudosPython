@@ -1,12 +1,30 @@
 import urllib3
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+import re
+import nltk
+
+
+def separaPalavras(texto):
+    stop = nltk.corpus.stopwords.words('portuguese')
+    stop.append('é')
+    stemmer = nltk.stem.RSLPStemer()
+    splitter = re.compile('\\W+')
+    lista_palavras = []
+    lista = [p for p in splitter.split(texto) if p != '' ]
+    for p in lista:
+        if p.lower() not in stop:
+            if len(p) > 1:
+                lista_palavras.append(stemmer.stem(p).lower())
+    return lista_palavras
+
 
 def getTexto():
     for tags in sopa(['script', 'style']):
         tags.decompose()
 
     return ' '.join(sopa.stripped_strings)
+
 
 # Criando metodo crawl
 def crawl(paginas, profundidade):
