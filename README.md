@@ -7,3 +7,4 @@
 
 ### Instalação biblioteca utilizada na extração de dados
 - conda install beautifulsoup4
+
