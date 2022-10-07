@@ -51,4 +51,5 @@ def crawl(paginas, profundidade):
         
         
 listapaginas = ['https://pt.wikipedia.org/wiki/Linguagem_de_programa%C3%A7%C3%A3o']
-crawl(listapaginas, 2)
+# Incluir profundidade 2 para incluir os links encontrados na primeira etapa
+crawl(listapaginas, 1)
