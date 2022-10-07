@@ -2,6 +2,12 @@ import urllib3
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
+def getTexto():
+    for tags in sopa(['script', 'style']):
+        tags.decompose()
+
+    return ' '.join(sopa.stripped_strings)
+
 # Criando metodo crawl
 def crawl(paginas, profundidade):
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning())
