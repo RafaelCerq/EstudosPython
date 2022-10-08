@@ -3,6 +3,34 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import re
 import nltk
+import pymysql
+
+
+def paginaIndexada(url):
+    retorno = -1 # -1 não existe a página
+    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice')
+    cursorUrl = conexao.cursor()
+    cursorUrl.execute('select idurl from urls where url = %s', url)
+    if cursorUrl.rowcount > 0:
+        #print("URL cadastrada")
+        idurl = cursorUrl.fetchone()[0]
+        cursorPalavra = conexao.cursor()
+        cursorPalavra.execute('select idurl form palavra_localizacao where idurl = %s', idurl)
+        if cursorPalavra.rowcount > 0:
+            #print("URL com palavras")
+            retorno = -2 # -2 existe a página com palavras cadastradas
+        else:
+            #print("URL sem palavras")
+            retorno = idurl # existe a página sem palavras, então retorna o id da página
+        
+        cursorPalavra.close()
+    #else:
+        #print("URL não cadastrada")
+        
+    cursorUrl.close()
+    conexao.close()
+    
+    return retorno
 
 
 def separaPalavras(texto):
@@ -19,7 +47,7 @@ def separaPalavras(texto):
     return lista_palavras
 
 
-def getTexto():
+def getTexto(sopa):
     for tags in sopa(['script', 'style']):
         tags.decompose()
 
