@@ -6,6 +6,19 @@ import nltk
 import pymysql
 
 
+def inserePalavraLocalizacao(idurl, idpalavra, localizacao):
+    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice', autocommit = True)
+    cursor = conexao.cursor()
+    cursor.execute('insert into palavra_localizacao (idurl, idpalavra, localizacao) values (%s, %s, %s)', (idurl, idpalavra, localizacao))
+    idpalavra_localizacao = cursor.lastrowid
+    
+    cursor.close()
+    conexao.close()
+    return idpalavra_localizacao
+
+inserePalavraLocalizacao(1, 1, 50)
+
+
 def inserePalavra(palavra):
     conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice', autocommit = True)
     cursor = conexao.cursor()
@@ -18,7 +31,6 @@ def inserePalavra(palavra):
 
 inserePalavra('teste2')
     
-
 
 def palavraIndexada(palavra):
     retorno = -1
