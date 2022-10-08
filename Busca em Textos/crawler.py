@@ -6,6 +6,24 @@ import nltk
 import pymysql
 
 
+def palavraIndexada(palavra):
+    retorno = -1
+    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice')
+    cursor = conexao.cursor()
+    cursor.execute('select idpalavra from palavras where palavra = %s', palavra)
+    if cursor.rowcount > 0:
+        #print("Palavra já cadastrada")
+        retorno = cursor.fetchone()[0]
+    #else:
+        #print("Palavra não cadastrada")
+    
+    cursor.close()
+    conexao.close()
+    
+    return retorno
+
+palavraIndexada('linguagem')
+
 def inserePagina(url):
     conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice', autocommit = True)
     cursor = conexao.cursor()
