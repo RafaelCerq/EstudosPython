@@ -6,6 +6,20 @@ import nltk
 import pymysql
 
 
+def inserePalavra(palavra):
+    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice', autocommit = True)
+    cursor = conexao.cursor()
+    cursor.execute('insert into palavras (palavra) values (%s)', palavra)
+    idpalavra = cursor.lastrowid
+    
+    cursor.close()
+    conexao.close()
+    return idpalavra
+
+inserePalavra('teste2')
+    
+
+
 def palavraIndexada(palavra):
     retorno = -1
     conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice')
