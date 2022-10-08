@@ -6,6 +6,19 @@ import nltk
 import pymysql
 
 
+def inserePagina(url):
+    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice', autocommit = True)
+    cursor = conexao.cursor()
+    cursor.execute('insert into urls (url) values (%s)', url)
+    idpagina = cursor.lastrowid
+    
+    cursor.close()
+    conexao.close()
+    return idpagina
+
+inserePagina('teste')
+    
+
 def paginaIndexada(url):
     retorno = -1 # -1 não existe a página
     conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice')
@@ -15,7 +28,7 @@ def paginaIndexada(url):
         #print("URL cadastrada")
         idurl = cursorUrl.fetchone()[0]
         cursorPalavra = conexao.cursor()
-        cursorPalavra.execute('select idurl form palavra_localizacao where idurl = %s', idurl)
+        cursorPalavra.execute('select idurl from palavra_localizacao where idurl = %s', idurl)
         if cursorPalavra.rowcount > 0:
             #print("URL com palavras")
             retorno = -2 # -2 existe a página com palavras cadastradas
@@ -31,6 +44,8 @@ def paginaIndexada(url):
     conexao.close()
     
     return retorno
+
+paginaIndexada('teste')
 
 
 def separaPalavras(texto):
