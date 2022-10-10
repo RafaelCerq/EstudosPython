@@ -3,7 +3,7 @@ import nltk
 
 
 def frequenciaScore(linhas):
-    contagem = dict([linhas[0], 0] for linha in linhas)
+    contagem = dict([linha[0], 0] for linha in linhas)
     for linha in linhas:
         contagem[linha[0]] += 1
         #print(linha)
@@ -14,12 +14,15 @@ frequenciaScore(linhas)
 def pesquisa(consulta):
     linhas, palavrasid = buscaMaisPalavras(consulta)
     #linhas, palavrasid = buscaMaisPalavras('python programação')
-    scores = dict([linha[0],0] for linha in linhas)
+    
+    #scores = dict([linha[0],0] for linha in linhas)
+    scores = frequenciaScore(linhas)
+    
     #for linha in linhas:
     #    print(linha)
     #for url, score in scores.items():
     #    print(str(url) + ' - ' + str(score))
-    scoresordenado = sorted([(score, url) for (url, score) in scores.items()])
+    scoresordenado = sorted([(score, url) for (url, score) in scores.items()], reverse=1)
     for (score, idurl) in scoresordenado[0:10]:
         print('%f\t%s' % (score, getUrl(idurl)))
 
