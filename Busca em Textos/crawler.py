@@ -104,6 +104,33 @@ def separaPalavras(texto):
                 lista_palavras.append(stemmer.stem(p.lower()))
     return lista_palavras
 
+#link = 'https://pt.wikipedia.org/wiki/Linguagem_de_programa%C3%A7%C3%A3o'
+#link = link.replace('_', ' ')
+#palavras = separaPalavras(link)
+
+
+def urlLigaPalavra(url_origem, url_destino):
+    texto_url = url_destino.replace('_', ' ')
+    palavras = separaPalavras(texto_url)
+    idurl_origem = getIdUrl(url_origem)
+    idurl_destino = getIdUrl(url_destino)
+    if idurl_destino == -1:
+        idurl_destino = inserePagina(url_destino)
+    
+    if idurl_origem == idurl_destino:
+        return
+    
+    if getIdUrlLigacao(idurl_origem, idurl_destino) > 0:
+        return
+        
+    idurl_ligacao = insertUrlLigacao(idurl_origem, idurl_destino)
+    for palavra in palavras:
+        idpalavra = palavraIndexada(palavra)
+        if idpalavra == -1:
+            idpalavra = inserePalavra(palavra)
+        insertUrlPalavra(idpalavra, idurl_ligacao)
+        
+
 
 def getTexto(sopa):
     for tags in sopa(['script', 'style']):
@@ -229,6 +256,8 @@ def crawl(paginas, profundidade):
                     
                     if url[0:4] == 'http':
                         novas_paginas.add(url);
+                    
+                    urlLigaPalavra(pagina, url)
         
                     contador = contador + 1
             
