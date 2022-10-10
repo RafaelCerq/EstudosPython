@@ -1,6 +1,16 @@
 import pymysql
 import nltk
 
+
+def frequenciaScore(linhas):
+    contagem = dict([linhas[0], 0] for linha in linhas)
+    for linha in linhas:
+        contagem[linha[0]] += 1
+        #print(linha)
+    return contagem
+
+frequenciaScore(linhas)
+
 def pesquisa(consulta):
     linhas, palavrasid = buscaMaisPalavras(consulta)
     #linhas, palavrasid = buscaMaisPalavras('python programação')
