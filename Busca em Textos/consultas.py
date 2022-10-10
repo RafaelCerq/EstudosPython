@@ -2,6 +2,20 @@ import pymysql
 import nltk
 
 
+def distanciaScore(linhas):
+    if len(linhas[0]) <= 2:
+        return dict([(linha[0], 1.0) for linha in linhas])
+    distancias = dict([(linha[0], 1000000) for linha in linhas])
+    for linha in linhas:
+        dist = sum([abs(linha[i] - linha[i -1]) for i in range(2, len(linha))])
+        if dist < distancias[linha[0]]:
+            distancias[linha[0]] = dist
+    return distancias
+
+
+distanciaScore(linhas)
+
+
 def localizacaoScore(linhas):
     localizacoes = dict([linha[0], 1000000] for linha in linhas)
     for linha in linhas:
@@ -29,12 +43,15 @@ def pesquisa(consulta):
     
     #scores = dict([linha[0],0] for linha in linhas)
     #scores = frequenciaScore(linhas)
-    scores = localizacaoScore(linhas)
+    #scores = localizacaoScore(linhas)
+    scores = distanciaScore(linhas)
     
     #for linha in linhas:
     #    print(linha)
     #for url, score in scores.items():
     #    print(str(url) + ' - ' + str(score))
+    
+    #scoresordenado = sorted([(score, url) for (url, score) in scores.items()], reverse=1)
     scoresordenado = sorted([(score, url) for (url, score) in scores.items()], reverse=0)
     for (score, idurl) in scoresordenado[0:10]:
         print('%f\t%s' % (score, getUrl(idurl)))
