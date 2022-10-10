@@ -2,6 +2,18 @@ import pymysql
 import nltk
 
 
+def localizacaoScore(linhas):
+    localizacoes = dict([linha[0], 1000000] for linha in linhas)
+    for linha in linhas:
+        soma = sum(linha[1:])
+        if soma < localizacoes[linha[0]]:
+            localizacoes[linha[0]] = soma
+    return localizacoes
+
+
+localizacaoScore(linhas)
+
+
 def frequenciaScore(linhas):
     contagem = dict([linha[0], 0] for linha in linhas)
     for linha in linhas:
@@ -16,13 +28,14 @@ def pesquisa(consulta):
     #linhas, palavrasid = buscaMaisPalavras('python programação')
     
     #scores = dict([linha[0],0] for linha in linhas)
-    scores = frequenciaScore(linhas)
+    #scores = frequenciaScore(linhas)
+    scores = localizacaoScore(linhas)
     
     #for linha in linhas:
     #    print(linha)
     #for url, score in scores.items():
     #    print(str(url) + ' - ' + str(score))
-    scoresordenado = sorted([(score, url) for (url, score) in scores.items()], reverse=1)
+    scoresordenado = sorted([(score, url) for (url, score) in scores.items()], reverse=0)
     for (score, idurl) in scoresordenado[0:10]:
         print('%f\t%s' % (score, getUrl(idurl)))
 
