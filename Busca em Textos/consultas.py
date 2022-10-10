@@ -2,6 +2,40 @@ import pymysql
 import nltk
 
 
+def buscaMaisPalavras(consulta):
+    listacampos = 'p1.idurl'
+    listatabelas = ''
+    listaclausulas = ''
+    palavrasid = []
+    
+    palavras = consulta.split(' ')
+    numeroTabela = 1
+    for palavra in palavras:
+        idpalavra = getIdPalavra(palavra)
+        if idpalavra > 1:
+            palavrasid.append(idpalavra)
+            if numeroTabela > 1:
+                listatabelas += ', '
+                listaclausulas += ' and '
+                listaclausulas += 'p%d.idurl = p%d.idurl and ' % (numeroTabela -1, numeroTabela)
+            listacampos += ', p%d.localizacao' % numeroTabela
+            listatabelas += ' palavra_localizacao p%d' % numeroTabela
+            listaclausulas += 'p%d.idpalavra = %d' % (numeroTabela, idpalavra)
+            numeroTabela += 1
+        consultacompleta = 'select %s from %s where %s' % (listacampos, listatabelas, listaclausulas)
+        
+    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice')
+    cursor = conexao.cursor()
+    cursor.execute(consultacompleta)
+    linhas = [linha for linha in cursor]
+    
+    cursor.close()
+    conexao.close()
+    return linhas, palavrasid
+
+linhas, palavrasid = buscaMaisPalavras('python programação')
+
+
 def getIdPalavra(palavra):
     retorno = -1
     stemmer = nltk.stem.RSLPStemmer()
