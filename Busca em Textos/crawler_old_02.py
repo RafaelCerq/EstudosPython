@@ -112,29 +112,6 @@ def getTexto(sopa):
     return ' '.join(sopa.stripped_strings)
 
 
-def insertUrlLigacao(idurl_origem, idurl_destino):
-    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice', autocommit = True)
-    cursor = conexao.cursor()
-    cursor.execute("insert into url_ligacao (idurl_origem, idurl_destino) values (%s, %s)", (idurl_origem, idurl_destino))
-    idurl_ligacao = cursor.lastrowid
-    cursor.close()
-    conexao.close()
-    return idurl_ligacao
-
-#insertUrlLigacao(305, 378)
-    
-def insertUrlPalavra(idpalavra, idurl_ligacao):
-    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice', autocommit = True)
-    cursor = conexao.cursor()
-    cursor.execute("insert into url_palavra (idpalavra, idurl_ligacao) values (%s, %s)", (idpalavra, idurl_ligacao))
-    idurl_palavra = cursor.lastrowid
-    cursor.close()
-    conexao.close()
-    return idurl_palavra
-
-#insertUrlPalavra(244, 1)
-
-
 def indexador(url, sopa):
     indexada = paginaIndexada(url)
     if indexada == -2:
