@@ -113,6 +113,28 @@ def getTexto(sopa):
     return ' '.join(sopa.stripped_strings)
 
 
+def indexador(url, sopa):
+    indexada = paginaIndexada(url)
+    if indexada == -2:
+        print("Url já indexada")
+        return
+    elif indexada == -1:
+        idnova_pagina = inserePagina(url)
+    elif indexada > 0:
+        idnova_pagina = indexada
+        
+    print("Indexando " + url)
+    
+    texto = getTexto(sopa)
+    palavras = separaPalavras(texto)
+    for i in range(len(palavras)):
+        palavra = palavras[i]
+        idpalavra = palavraIndexada(palavra)
+        if idpalavra == -1:
+            idpalavra = inserePalavra(palavra)
+        inserePalavraLocalizacao(idnova_pagina, idpalavra, i)
+    
+
 # Criando metodo crawl
 def crawl(paginas, profundidade):
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning())
@@ -131,6 +153,9 @@ def crawl(paginas, profundidade):
                 
             
             sopa = BeautifulSoup(dados_pagina.data, "lxml")
+            
+            indexador(url, sopa)
+            
             links = sopa.find_all('a')
             contador = 1
             for link in links:
