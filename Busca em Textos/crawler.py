@@ -94,15 +94,14 @@ paginaIndexada('teste')
 
 def separaPalavras(texto):
     stop = nltk.corpus.stopwords.words('portuguese')
-    stop.append('é')
-    stemmer = nltk.stem.RSLPStemer()
+    stemmer = nltk.stem.RSLPStemmer()
     splitter = re.compile('\\W+')
     lista_palavras = []
-    lista = [p for p in splitter.split(texto) if p != '' ]
+    lista = [p for p in splitter.split(texto) if p != '']
     for p in lista:
-        if p.lower() not in stop:
+        if stemmer.stem(p.lower()) not in stop:
             if len(p) > 1:
-                lista_palavras.append(stemmer.stem(p).lower())
+                lista_palavras.append(stemmer.stem(p.lower()))
     return lista_palavras
 
 
