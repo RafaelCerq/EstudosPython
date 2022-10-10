@@ -1,6 +1,35 @@
 import pymysql
 import nltk
 
+def pesquisa(consulta):
+    linhas, palavrasid = buscaMaisPalavras(consulta)
+    #linhas, palavrasid = buscaMaisPalavras('python programação')
+    scores = dict([linha[0],0] for linha in linhas)
+    #for linha in linhas:
+    #    print(linha)
+    #for url, score in scores.items():
+    #    print(str(url) + ' - ' + str(score))
+    scoresordenado = sorted([(score, url) for (url, score) in scores.items()])
+    for (score, idurl) in scoresordenado[0:10]:
+        print('%f\t%s' % (score, getUrl(idurl)))
+
+pesquisa('python programação')
+
+
+def getUrl(idurl):
+    retorno = ''
+    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice')
+    cursor = conexao.cursor()
+    cursor.execute('select url from urls where idurl = %s', idurl)
+    if cursor.rowcount > 0:
+        retorno = cursor.fetchone()[0]
+    
+    cursor.close()
+    conexao.close()
+    return retorno
+
+getUrl(1)
+
 
 def buscaMaisPalavras(consulta):
     listacampos = 'p1.idurl'
