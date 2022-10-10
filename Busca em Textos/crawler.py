@@ -51,7 +51,7 @@ def palavraIndexada(palavra):
 palavraIndexada('linguagem')
 
 def inserePagina(url):
-    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice', autocommit = True)
+    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice', autocommit = True, use_unicode = True, charset = 'utf8mb4')
     cursor = conexao.cursor()
     cursor.execute('insert into urls (url) values (%s)', url)
     idpagina = cursor.lastrowid
@@ -133,6 +133,34 @@ def insertUrlPalavra(idpalavra, idurl_ligacao):
     return idurl_palavra
 
 #insertUrlPalavra(244, 1)
+
+
+def getIdUrlLigacao(idurl_origem, idurl_destino):
+    idurl_ligacao = -1
+    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice')
+    cursor = conexao.cursor()
+    cursor.execute('select idurl_ligacao from url_ligacao where idurl_origem = %s and idurl_destino = %s', (idurl_origem, idurl_destino))
+    if cursor.rowcount > 0:
+        idurl_ligacao = cursor.fetchone()[0]
+        
+    cursor.close()
+    conexao.close()
+    return idurl_ligacao
+
+#getIdUrlLigacao(399, 400)
+
+
+def getIdUrl(url):
+    idurl = -1
+    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice', charset="utf8")
+    cursor = conexao.cursor()
+    cursor.execute('select idurl from urls where url = %s', url)
+    if cursor.rowcount > 0:
+        idurl = cursor.fetchone()[0]
+        
+    cursor.close()
+    conexao.close()
+    return idurl
 
 
 def indexador(url, sopa):
