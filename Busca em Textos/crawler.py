@@ -16,7 +16,7 @@ def inserePalavraLocalizacao(idurl, idpalavra, localizacao):
     conexao.close()
     return idpalavra_localizacao
 
-inserePalavraLocalizacao(1, 1, 50)
+#inserePalavraLocalizacao(1, 1, 50)
 
 
 def inserePalavra(palavra):
@@ -29,7 +29,7 @@ def inserePalavra(palavra):
     conexao.close()
     return idpalavra
 
-inserePalavra('teste2')
+#inserePalavra('teste2')
     
 
 def palavraIndexada(palavra):
@@ -48,7 +48,7 @@ def palavraIndexada(palavra):
     
     return retorno
 
-palavraIndexada('linguagem')
+#palavraIndexada('linguagem')
 
 def inserePagina(url):
     conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice', autocommit = True, use_unicode = True, charset = 'utf8mb4')
@@ -60,7 +60,7 @@ def inserePagina(url):
     conexao.close()
     return idpagina
 
-inserePagina('teste')
+#inserePagina('teste')
     
 
 def paginaIndexada(url):
@@ -89,7 +89,7 @@ def paginaIndexada(url):
     
     return retorno
 
-paginaIndexada('teste')
+#paginaIndexada('teste')
 
 
 def separaPalavras(texto):
@@ -267,4 +267,4 @@ def crawl(paginas, profundidade):
         
 listapaginas = ['https://pt.wikipedia.org/wiki/Linguagem_de_programa%C3%A7%C3%A3o']
 # Incluir profundidade 2 para incluir os links encontrados na primeira etapa
-crawl(listapaginas, 1)
+crawl(listapaginas, 2)
