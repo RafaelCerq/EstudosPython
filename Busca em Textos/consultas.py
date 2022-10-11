@@ -166,20 +166,21 @@ def calculaPageRank(iteracoes):
     cursorLimpaTabela.execute('insert into page_rank select idurl, 1.0 from urls')
     
     for i in range(iteracoes):
-        #print("Iteracao " + str(i + 1))
+        print("Iteracao " + str(i + 1))
         cursorUrl = conexao.cursor()
         cursorUrl.execute('select idurl from urls ')
         for url in cursorUrl:
+            print("Iteracao " + str(i + 1) + ' - URL ' + str(url) + ' de ' str(len(cursorUrl)))
             #print(url[0])
             pr = 0.15
             cursorLinks = conexao.cursor()
-            cursorUrl.execute('select distinct(idurl_origem) from url_ligacao where idurl_destino = %s', url[0])
+            cursorLinks.execute('select distinct(idurl_origem) from url_ligacao where idurl_destino = %s', url[0])
             for link in cursorLinks:
                 cursorPageRank = conexao.cursor()
-                cursorPageRank.execute('select nota from page_rank where idurl = $s', link[0])
+                cursorPageRank.execute('select nota from page_rank where idurl = %s', link[0])
                 linkPageRank = cursorPageRank.fetchone()[0]
                 cursorQuantidade = conexao.cursor()
-                cursorQuantidade.execute('select count(*) from url_ligacao where idurl = %s', link[0])
+                cursorQuantidade.execute('select count(*) from url_ligacao where idurl_origem = %s', link[0])
                 linkQuantidade = cursorQuantidade.fetchone()[0]
                 pr += 0.85 * (linkPageRank / linkQuantidade)
             cursorAtualiza = conexao.cursor()
@@ -194,3 +195,5 @@ def calculaPageRank(iteracoes):
     cursorLimpaTabela.close()
     conexao.close()
 
+
+calculaPageRank(20)
