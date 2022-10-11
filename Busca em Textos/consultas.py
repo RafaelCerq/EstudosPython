@@ -8,6 +8,12 @@ def normalizaMaior(notas):
     if maximo == 0:
         maximo = menor
     return dict([(id, float(nota) / maximo) for (id, nota) in notas.items()])
+
+
+def normalizaMenor(notas):
+    menor = 0.00001
+    minimo = min(notas.values())
+    return dict([(id, float(minimo) / max(menor, nota)) for (id, nota) in notas.items()])
              
 
 def contagemLinkScore(linhas):
@@ -21,7 +27,7 @@ def contagemLinkScore(linhas):
     
     cursor.close()
     conexao.close()
-    return contagem
+    return normalizaMaior(contagem)
 
 
 def pageRankScore(linhas):
@@ -35,7 +41,7 @@ def pageRankScore(linhas):
     
     cursor.close()
     conexao.close()
-    return pageranks
+    return normalizaMaior(pageranks)
 
 
 def textoLinkScore(linhas, palavrasid):
@@ -54,7 +60,7 @@ def textoLinkScore(linhas, palavrasid):
     cursorRank.close()
     cursor.close()
     conexao.close()
-    return contagem
+    return normalizaMaior(contagem)
 
 #textoLinkScore(linhas, palavrasid)
 
@@ -67,7 +73,8 @@ def distanciaScore(linhas):
         dist = sum([abs(linha[i] - linha[i -1]) for i in range(2, len(linha))])
         if dist < distancias[linha[0]]:
             distancias[linha[0]] = dist
-    return distancias
+    #return distancias
+    return normalizaMenor(distancias)
 
 
 #distanciaScore(linhas)
@@ -79,7 +86,8 @@ def localizacaoScore(linhas):
         soma = sum(linha[1:])
         if soma < localizacoes[linha[0]]:
             localizacoes[linha[0]] = soma
-    return localizacoes
+    #return localizacoes
+    return normalizaMenor(localizacoes)
 
 
 #localizacaoScore(linhas)
@@ -100,12 +108,12 @@ def pesquisa(consulta):
     #linhas, palavrasid = buscaMaisPalavras('python programação')
     
     #scores = dict([linha[0],0] for linha in linhas)
-    scores = frequenciaScore(linhas)
+    #scores = frequenciaScore(linhas)
     #scores = localizacaoScore(linhas)
     #scores = distanciaScore(linhas)
     #scores = contagemLinkScore(linhas)
     #scores = pageRankScore(linhas)
-    #scores = textoLinkScore(linhas, palavrasid)
+    scores = textoLinkScore(linhas, palavrasid)
     
     #for linha in linhas:
     #    print(linha)
