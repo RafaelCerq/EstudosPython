@@ -2,6 +2,14 @@ import pymysql
 import nltk
 
 
+def normalizaMaior(notas):
+    menor = 0.00001
+    maximo = max(notas.values())
+    if maximo == 0:
+        maximo = menor
+    return dict([(id, float(nota) / maximo) for (id, nota) in notas.items()])
+             
+
 def contagemLinkScore(linhas):
     contagem = dict([linha[0], 1.0] for linha in linhas)
     conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice')
@@ -82,7 +90,8 @@ def frequenciaScore(linhas):
     for linha in linhas:
         contagem[linha[0]] += 1
         #print(linha)
-    return contagem
+    #return contagem
+    return normalizaMaior(contagem)
 
 #frequenciaScore(linhas)
 
@@ -91,12 +100,12 @@ def pesquisa(consulta):
     #linhas, palavrasid = buscaMaisPalavras('python programação')
     
     #scores = dict([linha[0],0] for linha in linhas)
-    #scores = frequenciaScore(linhas)
+    scores = frequenciaScore(linhas)
     #scores = localizacaoScore(linhas)
     #scores = distanciaScore(linhas)
     #scores = contagemLinkScore(linhas)
     #scores = pageRankScore(linhas)
-    scores = textoLinkScore(linhas, palavrasid)
+    #scores = textoLinkScore(linhas, palavrasid)
     
     #for linha in linhas:
     #    print(linha)
