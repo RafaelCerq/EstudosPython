@@ -128,6 +128,33 @@ def pesquisa(consulta):
 pesquisa('python programação')
 
 
+def pesquisaPeso(consulta):
+    linhas, palavrasid = buscaMaisPalavras(consulta)
+    totalscores = dict([linha[0], 0] for linha in linhas)
+    pesos= [(1.0, frequenciaScore(linhas)),
+            (1.0, localizacaoScore(linhas)),
+            (1.0, distanciaScore(linhas)),
+            (1.0, contagemLinkScore(linhas)),
+            (1.0, pageRankScore(linhas)),
+            (1.0, textoLinkScore(linhas, palavrasid))]
+    
+    for (peso, scores) in pesos:
+        #print(peso)
+        #print(scores)
+        for url in totalscores:
+            #print(url)
+            totalscores[url] += peso * scores[url]
+            
+    totalscores = normalizaMaior(totalscores)
+    scoresordenado = sorted([(score, url) for (url, score) in totalscores.items()], reverse=1)
+    for (score, idurl) in scoresordenado[0:10]:
+        print('%f\t%s' % (score, getUrl(idurl)))
+
+
+pesquisaPeso('python programação')
+
+
+
 def getUrl(idurl):
     retorno = ''
     conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice')
