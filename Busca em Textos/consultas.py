@@ -157,3 +157,40 @@ def buscaUmaPalavra(palavra):
     conexao.close()
 
 buscaUmaPalavra('Programação')	
+
+
+def calculaPageRank(iteracoes):
+    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice', autocommit = True)
+    cursorLimpaTabela = conexao.cursor()
+    cursorLimpaTabela.execute('delete from page_rank')
+    cursorLimpaTabela.execute('insert into page_rank select idurl, 1.0 from urls')
+    
+    for i in range(iteracoes):
+        #print("Iteracao " + str(i + 1))
+        cursorUrl = conexao.cursor()
+        cursorUrl.execute('select idurl from urls ')
+        for url in cursorUrl:
+            #print(url[0])
+            pr = 0.15
+            cursorLinks = conexao.cursor()
+            cursorUrl.execute('select distinct(idurl_origem) from url_ligacao where idurl_destino = %s', url[0])
+            for link in cursorLinks:
+                cursorPageRank = conexao.cursor()
+                cursorPageRank.execute('select nota from page_rank where idurl = $s', link[0])
+                linkPageRank = cursorPageRank.fetchone()[0]
+                cursorQuantidade = conexao.cursor()
+                cursorQuantidade.execute('select count(*) from url_ligacao where idurl = %s', link[0])
+                linkQuantidade = cursorQuantidade.fetchone()[0]
+                pr += 0.85 * (linkPageRank / linkQuantidade)
+            cursorAtualiza = conexao.cursor()
+            cursorAtualiza.execute('update page_rank set nota = %s where idurl = %s', (pr, url[0]))
+    
+    
+    cursorAtualiza.close()
+    cursorQuantidade.close()
+    cursorPageRank.close()
+    cursorLinks.close()
+    cursorUrl.close()
+    cursorLimpaTabela.close()
+    conexao.close()
+
