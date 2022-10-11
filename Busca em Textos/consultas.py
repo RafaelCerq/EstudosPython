@@ -2,6 +2,20 @@ import pymysql
 import nltk
 
 
+def contagemLinkScore(linhas):
+    contagem = dict([linha[0], 1.0] for linha in linhas)
+    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice')
+    cursor = conexao.cursor()
+    for i in contagem:
+        #print(i)
+        cursor.execute('select count(*) from url_ligacao where idurl_destino = %s', i)
+        contagem[i] = cursor.fetchone()[0]
+    
+    cursor.close()
+    conexao.close()
+    return contagem
+
+
 def distanciaScore(linhas):
     if len(linhas[0]) <= 2:
         return dict([(linha[0], 1.0) for linha in linhas])
@@ -44,15 +58,16 @@ def pesquisa(consulta):
     #scores = dict([linha[0],0] for linha in linhas)
     #scores = frequenciaScore(linhas)
     #scores = localizacaoScore(linhas)
-    scores = distanciaScore(linhas)
+    #scores = distanciaScore(linhas)
+    scores = contagemLinkScore(linhas)
     
     #for linha in linhas:
     #    print(linha)
     #for url, score in scores.items():
     #    print(str(url) + ' - ' + str(score))
     
-    #scoresordenado = sorted([(score, url) for (url, score) in scores.items()], reverse=1)
-    scoresordenado = sorted([(score, url) for (url, score) in scores.items()], reverse=0)
+    #scoresordenado = sorted([(score, url) for (url, score) in scores.items()], reverse=0)
+    scoresordenado = sorted([(score, url) for (url, score) in scores.items()], reverse=1)
     for (score, idurl) in scoresordenado[0:10]:
         print('%f\t%s' % (score, getUrl(idurl)))
 
