@@ -16,6 +16,20 @@ def contagemLinkScore(linhas):
     return contagem
 
 
+def pageRankScore(linhas):
+    pageranks = dict([linha[0], 1.0] for linha in linhas)
+    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice')
+    cursor = conexao.cursor()
+    for i in pageranks:
+        #print(i)
+        cursor.execute('select nota from page_rank where idurl = %s', i)
+        pageranks[i] = cursor.fetchone()[0]
+    
+    cursor.close()
+    conexao.close()
+    return pageranks
+
+
 def distanciaScore(linhas):
     if len(linhas[0]) <= 2:
         return dict([(linha[0], 1.0) for linha in linhas])
@@ -59,7 +73,8 @@ def pesquisa(consulta):
     #scores = frequenciaScore(linhas)
     #scores = localizacaoScore(linhas)
     #scores = distanciaScore(linhas)
-    scores = contagemLinkScore(linhas)
+    #scores = contagemLinkScore(linhas)
+    scores = pageRankScore(linhas)
     
     #for linha in linhas:
     #    print(linha)
