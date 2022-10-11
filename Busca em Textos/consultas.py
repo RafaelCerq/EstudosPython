@@ -30,6 +30,27 @@ def pageRankScore(linhas):
     return pageranks
 
 
+def textoLinkScore(linhas, palavrasid):
+    contagem = dict([linha[0], 0] for linha in linhas)
+    conexao = pymysql.connect(host='localhost', user='root', passwd='root', db='indice')
+    for id in palavrasid:
+        cursor = conexao.cursor()
+        cursor.execute('select ul.idurl_origem, ul.idurl_destino from url_palavra up inner join url_ligacao ul on up.idurl_ligacao = ul.idurl_ligacao where up.idpalavra = %s', id)
+        for (idurl_origem, idurl_destino) in cursor:
+            if idurl_destino in contagem:
+                cursorRank = conexao.cursor()
+                cursorRank.execute('select nota from page_rank where idurl = %s', idurl_origem)
+                pr = cursorRank.fetchone()[0]
+                contagem[idurl_destino] +=pr
+    
+    cursorRank.close()
+    cursor.close()
+    conexao.close()
+    return contagem
+
+#textoLinkScore(linhas, palavrasid)
+
+
 def distanciaScore(linhas):
     if len(linhas[0]) <= 2:
         return dict([(linha[0], 1.0) for linha in linhas])
@@ -41,7 +62,7 @@ def distanciaScore(linhas):
     return distancias
 
 
-distanciaScore(linhas)
+#distanciaScore(linhas)
 
 
 def localizacaoScore(linhas):
@@ -53,7 +74,7 @@ def localizacaoScore(linhas):
     return localizacoes
 
 
-localizacaoScore(linhas)
+#localizacaoScore(linhas)
 
 
 def frequenciaScore(linhas):
@@ -63,7 +84,7 @@ def frequenciaScore(linhas):
         #print(linha)
     return contagem
 
-frequenciaScore(linhas)
+#frequenciaScore(linhas)
 
 def pesquisa(consulta):
     linhas, palavrasid = buscaMaisPalavras(consulta)
@@ -74,7 +95,8 @@ def pesquisa(consulta):
     #scores = localizacaoScore(linhas)
     #scores = distanciaScore(linhas)
     #scores = contagemLinkScore(linhas)
-    scores = pageRankScore(linhas)
+    #scores = pageRankScore(linhas)
+    scores = textoLinkScore(linhas, palavrasid)
     
     #for linha in linhas:
     #    print(linha)
@@ -101,7 +123,7 @@ def getUrl(idurl):
     conexao.close()
     return retorno
 
-getUrl(1)
+#getUrl(1)
 
 
 def buscaMaisPalavras(consulta):
@@ -212,4 +234,4 @@ def calculaPageRank(iteracoes):
     conexao.close()
 
 
-calculaPageRank(20)
+#calculaPageRank(20)
