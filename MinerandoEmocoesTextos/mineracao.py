@@ -1,6 +1,6 @@
 import nltk
 
-#nltk.download()
+# nltk.download()
 
 base = [('eu sou admirada por muitos','alegria'),
         ('me sinto completamente amado','alegria'),
@@ -23,19 +23,19 @@ base = [('eu sou admirada por muitos','alegria'),
         ('eu tenho muito medo dele', 'medo'),
         ('estou com medo do resultado dos meus testes', 'medo')]
 
-#print(base)
+# print(base)
 
 stopwords = ['a', 'agora', 'algum', 'alguma', 'aquele', 'aqueles', 'de', 'deu', 'do', 'e', 'estou', 'esta', 'esta',
              'ir', 'meu', 'muito', 'mesmo', 'no', 'nossa', 'o', 'outro', 'para', 'que', 'sem', 'talvez', 'tem', 'tendo',
              'tenha', 'teve', 'tive', 'todo', 'um', 'uma', 'umas', 'uns', 'vou']
 
 stopwordsnltk = nltk.corpus.stopwords.words('portuguese')
-#print(stopwordsnltk)
+# print(stopwordsnltk)
 
 def removestopwords(texto):
     frases = []
     for (palavras, emocao) in texto:
-        #semstop = [p for p in palavras.split() if p not in stopwords]
+        # semstop = [p for p in palavras.split() if p not in stopwords]
         semstop = [p for p in palavras.split() if p not in stopwordsnltk]
         frases.append((semstop, emocao))
     return frases
@@ -52,3 +52,12 @@ def aplicastemmer(texto):
 
 frasescomstemming = aplicastemmer(base)
 print(frasescomstemming)
+
+def buscapalavras(frases):
+    todaspalavras = []
+    for (palavras, emocao) in frases:
+        todaspalavras.extend(palavras)
+    return todaspalavras
+
+palavras = buscapalavras(frasescomstemming)
+print(palavras)
