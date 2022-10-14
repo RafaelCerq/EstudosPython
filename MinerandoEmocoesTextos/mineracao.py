@@ -41,3 +41,14 @@ def removestopwords(texto):
     return frases
 
 print(removestopwords(base))
+
+def aplicastemmer(texto):
+    stemmer = nltk.stem.RSLPStemmer()
+    frasesstemming = []
+    for (palavras, emocao) in texto:
+        comstemming = [str(stemmer.stem(p)) for p in palavras.split() if p not in stopwordsnltk]
+        frasesstemming.append((comstemming, emocao))
+    return frasesstemming
+
+frasescomstemming = aplicastemmer(base)
+print(frasescomstemming)
