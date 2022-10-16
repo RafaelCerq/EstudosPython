@@ -85,3 +85,6 @@ def extratorpalavras(documento):
 
 caracteristicasfrase = extratorpalavras(['am', 'nov', 'dia'])
 print(caracteristicasfrase)
+
+basecompleta = nltk.classify.apply_features(extratorpalavras, frasescomstemming)
+print(basecompleta[15])
