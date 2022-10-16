@@ -40,7 +40,7 @@ def removestopwords(texto):
         frases.append((semstop, emocao))
     return frases
 
-print(removestopwords(base))
+# print(removestopwords(base))
 
 def aplicastemmer(texto):
     stemmer = nltk.stem.RSLPStemmer()
@@ -51,7 +51,7 @@ def aplicastemmer(texto):
     return frasesstemming
 
 frasescomstemming = aplicastemmer(base)
-print(frasescomstemming)
+# print(frasescomstemming)
 
 def buscapalavras(frases):
     todaspalavras = []
@@ -60,7 +60,7 @@ def buscapalavras(frases):
     return todaspalavras
 
 palavras = buscapalavras(frasescomstemming)
-print(palavras)
+# print(palavras)
 
 def buscafrequencia(palavras):
     palavras = nltk.FreqDist(palavras)
@@ -74,7 +74,7 @@ def buscapalavrasunicas(frequencia):
     return freq
 
 palavrasunicas = buscapalavrasunicas(frequencia)
-print(palavrasunicas)
+# print(palavrasunicas)
 
 def extratorpalavras(documento):
     doc = set(documento)
@@ -84,7 +84,12 @@ def extratorpalavras(documento):
     return caracteristicas
 
 caracteristicasfrase = extratorpalavras(['am', 'nov', 'dia'])
-print(caracteristicasfrase)
+# print(caracteristicasfrase)
 
 basecompleta = nltk.classify.apply_features(extratorpalavras, frasescomstemming)
-print(basecompleta[15])
+# print(basecompleta[15])
+
+# constroi a tabela de probabilidade
+classificador = nltk.NaiveBayesClassifier.train(basecompleta)
+# print(classificador.labels())
+print(classificador.show_most_informative_features(5))
