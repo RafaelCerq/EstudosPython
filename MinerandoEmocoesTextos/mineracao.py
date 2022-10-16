@@ -67,7 +67,7 @@ def buscafrequencia(palavras):
     return palavras
 
 frequencia = buscafrequencia(palavras)
-print(frequencia.most_common(50))
+# print(frequencia.most_common(50))
 
 def buscapalavrasunicas(frequencia):
     freq = frequencia.keys()
@@ -92,4 +92,20 @@ basecompleta = nltk.classify.apply_features(extratorpalavras, frasescomstemming)
 # constroi a tabela de probabilidade
 classificador = nltk.NaiveBayesClassifier.train(basecompleta)
 # print(classificador.labels())
-print(classificador.show_most_informative_features(5))
+# print(classificador.show_most_informative_features(5))
+
+teste = 'estou com medo'
+testestemming = []
+stemmer = nltk.stem.RSLPStemmer()
+for (palavras) in teste.split():
+    comstem = [p for p in palavras.split()]
+    testestemming.append(str(stemmer.stem(comstem[0])))
+# print(testestemming)
+
+novo = extratorpalavras(testestemming)
+# print(novo)
+
+print(classificador.classify(novo))
+distribuicao = classificador.prob_classify(novo)
+for classe in distribuicao.samples():
+    print("%s : %f" % (classe, distribuicao.prob(classe)))
